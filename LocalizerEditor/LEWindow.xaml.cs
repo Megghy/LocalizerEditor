@@ -18,9 +18,9 @@ namespace LocalizerEditor
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class LTEWindow : HandyControl.Controls.Window
+    public partial class LEWindow : HandyControl.Controls.Window
     {
-        public LTEWindow()
+        public LEWindow()
         {
 
         }
