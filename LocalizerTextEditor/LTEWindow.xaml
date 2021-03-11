@@ -1,0 +1,43 @@
+﻿<hc:Window x:Name="LTEWindow"
+           x:Class="LocalizerEditor.LTEWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:local="clr-namespace:LocalizerTextEditor"
+        mc:Ignorable="d"
+        Title="LocalizerEditor" Height="500" Width="1000">
+    <Grid>
+        <TabControl TabStripPlacement="Left">
+            <hc:TabItem Header="主页" FontSize="20" Margin="0,0,0,-2.4">
+                <Grid Margin="0,0,-0.2,0.4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="110*"/>
+                        <RowDefinition Height="47*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="634*"/>
+                        <ColumnDefinition Width="299*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="本地汉化包" Margin="10,10,0,293" HorizontalAlignment="Left" Width="109"></TextBlock>
+                    <hc:Divider Margin="10,39,9,285" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2"/>
+                    <DataGrid x:Name="Main_AllFiles" Margin="10,55,10,5"/>
+                    <TextBlock Text="最近使用" Margin="10,0,0,113" Grid.Row="1" HorizontalAlignment="Left" Width="94"></TextBlock>
+                    <DataGrid x:Name="Main_History" Margin="10,30,10,9.6" Grid.Row="1"/>
+                    <TextBlock Height="25" Margin="10,55,0,0" TextWrapping="Wrap" Text="详细信息" VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Left" Width="85"/>
+                    <Button x:Name="Main_FileLocation"
+                            Click="ChooseFileLocation"
+                            Content="选择汉化包文件夹位置" HorizontalAlignment="Stretch" Height="30" Margin="10,0,10,80.6" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="1"/>
+                    <Button x:Name="Main_ImportFile" Content="导入" HorizontalAlignment="Stretch" Height="30" Margin="10,0,10,45.6" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="1"/>
+                    <Button x:Name="Main_Refresh" Content="刷新" HorizontalAlignment="Stretch" Height="30" Margin="10,0,10,10.6" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="1"/>
+                </Grid>
+            </hc:TabItem>
+            <hc:TabItem Header="编辑">
+                <Grid Margin="0,0,-930,0.4">
+
+                </Grid>
+            </hc:TabItem>
+        </TabControl>
+    </Grid>
+</hc:Window>
