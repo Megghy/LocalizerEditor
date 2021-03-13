@@ -19,6 +19,13 @@ namespace LocalizerEditor
             mutex = new System.Threading.Mutex(true, "LocalizerEditor");
             if (mutex.WaitOne(0, false))
             {
+                if (LocalizerEditor.Properties.Settings.Default.UpgradeRequired)
+                {
+                    HandyControl.Controls.Growl.Success("已更新至新版本.");
+                    LocalizerEditor.Properties.Settings.Default.Upgrade();
+                    LocalizerEditor.Properties.Settings.Default.UpgradeRequired = false;
+                    LocalizerEditor.Properties.Settings.Default.Save();
+                }
                 base.OnStartup(e);
             }
             else
