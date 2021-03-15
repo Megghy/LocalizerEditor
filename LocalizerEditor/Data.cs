@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Media;
 using HandyControl.Controls;
 using Newtonsoft.Json.Linq;
 
@@ -31,6 +33,11 @@ namespace LocalizerEditor
             public string ModVersion { get; set; }
             public string Language { get; set; }
             public long EntriesCount { get; set; }
+            public List<string> FilesName { get { var list = new List<string>();
+
+                    foreach (var name in Data.Keys) {if(name != "Package")list.Add(name); }
+                    return list;
+                } set { } }
             public Dictionary<string, JObject> Data = new Dictionary<string, JObject>();
             Dictionary<string, List<LocalizeEntry>> _Entries;
             public Dictionary<string, List<LocalizeEntry>> Entries
@@ -109,6 +116,22 @@ namespace LocalizerEditor
             public string OriginDescription { get; set; }
             public string TranslateDescription { get; set; }
             public bool HaveDescription { get; set; }
+            public Brush StatusColor_Name { get { return TranslateName == ""  || TranslateName == OriginName? Color.FromRgb(250, 185, 51).ToBrush() : Color.FromRgb(155, 218, 48).ToBrush(); }}
+            public Brush StatusColor_Description { get { return TranslateDescription == "" || TranslateDescription == OriginDescription ? Color.FromRgb(250, 185, 51).ToBrush() : Color.FromRgb(155, 218, 48).ToBrush(); } }
+        }
+        public class EntriesListData
+        {
+            [Category("Category1")]
+            public string 原文 { get; set; }
+
+            [Category("Category2")]
+            public int Integer { get; set; }
+
+            [Category("Category2")]
+            public bool Boolean { get; set; }
+
+            [Category("Category1")]
+            public string 译文 { get; set; }
         }
         public class LdstrFile
         {

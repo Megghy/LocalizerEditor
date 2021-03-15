@@ -65,6 +65,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SynchronizedScrollViewer.cs" />
+    <Compile Include="Utils.cs" />
     <Page Include="LEWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -117,6 +119,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Module\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Warn.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

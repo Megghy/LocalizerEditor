@@ -17,6 +17,7 @@ using HandyControl.Controls;
 using HandyControl.Data;
 using static LocalizerEditor.Data;
 using MessageBox = HandyControl.Controls.MessageBox;
+using ScrollViewer = System.Windows.Controls.ScrollViewer;
 
 namespace LocalizerEditor
 {
@@ -27,6 +28,7 @@ namespace LocalizerEditor
     {
         internal static HandyControl.Controls.Window Instance;
         internal static Properties.Settings Setting => Properties.Settings.Default;
+        public static void Invoke(Action action) => Instance.Dispatcher.Invoke(action);
         public LEWindow()
         {
             
@@ -50,6 +52,12 @@ namespace LocalizerEditor
                 Growl.Warning("所指定的文件夹位置已不存在, 请重新指定.");
                 Properties.Settings.Default.FileLocation = null;
             }
+            else
+            {
+                RefreshFiles(null, null);
+            }
+
+            
         }
         #endregion
 
@@ -86,8 +94,66 @@ namespace LocalizerEditor
         private void SelectPackage(object sender, SelectionChangedEventArgs e)
         {
             var datagrid = sender as DataGrid;
-            Editor.ItemsSource = ((LocpackData)datagrid.SelectedItem).Entries["BasicItemFile"];
+            Editor.DataContext = ((LocpackData)datagrid.SelectedItem).Entries["BasicItemFile"];
+            Editor_FileList.ItemsSource = ((LocpackData)datagrid.SelectedItem).FilesName;
             MainTab.SelectedIndex = 1;
+            if (sv1 == null || sv2 == null)
+            {
+                //设置同步滚动
+                //分别获取两个DataGrid的ScrollViewer
+                sv1 = VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(Editor_EntriesList_Name, 0), 0) as ScrollViewer;
+                sv2 = VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(Editor_EntriesList_Description, 0), 0) as ScrollViewer;
+                //将滚动条属性值VerticalOffset关联到OnScrollChanged1方法
+                var offsetChangeListener = DependencyProperty.RegisterAttached("ListenerOffset1", typeof(object), typeof(UserControl), new PropertyMetadata(OnScrollChanged));
+                var binding = new Binding("VerticalOffset") { Source = sv1 };
+                sv1.SetBinding(offsetChangeListener, binding);
+
+                offsetChangeListener = DependencyProperty.RegisterAttached("ListenerOffset2", typeof(object), typeof(UserControl), new PropertyMetadata(OnScrollChanged));
+                binding = new Binding("VerticalOffset") { Source = sv2 };
+                sv2.SetBinding(offsetChangeListener, binding);
+
+                sv1.ScrollChanged += new ScrollChangedEventHandler(delegate (object s, ScrollChangedEventArgs _e) { if (_e.VerticalChange == 3) e.Handled = true; });
+                sv2.ScrollChanged += new ScrollChangedEventHandler(delegate (object s, ScrollChangedEventArgs _e) { if (_e.VerticalChange == 3) e.Handled = true; });
+            }
+        }
+        #endregion
+        #region 编辑器处理
+        ScrollViewer sv1;
+        ScrollViewer sv2;
+        public void OnScrollChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            Invoke(() => {
+                double old = e.OldValue == null ? 0 : (double)e.OldValue;
+                double a = (double)e.NewValue;
+                if(((double)e.NewValue - old) % 3 == 0) a = a > old ? old + 1 : old - 1;  //获取滚动条位置变化后的属性值
+                sv1.ScrollToVerticalOffset(a);
+                sv2.ScrollToVerticalOffset(a);
+            });
+        }
+        private void SelectEntry(object sender, SelectionChangedEventArgs e)
+        {
+            var datagrid = sender as DataGrid;
+            var data = (LocalizeEntry)datagrid.SelectedItem;
+
+
+            Editor_Origin.Document.Blocks.Clear();
+            Editor_Translate.Document.Blocks.Clear();
+
+            Paragraph paragraph_Origin = new Paragraph();
+            Paragraph paragraph_Translate = new Paragraph();
+
+            if (datagrid == Editor_EntriesList_Name)
+            {
+                paragraph_Origin.Inlines.Add(data.OriginName);
+                paragraph_Translate.Inlines.Add(data.TranslateName);
+            }
+            else
+            {
+                paragraph_Origin.Inlines.Add(data.OriginDescription);
+                paragraph_Translate.Inlines.Add(data.TranslateDescription);
+            }
+            Editor_Origin.Document.Blocks.Add(paragraph_Origin);
+            Editor_Translate.Document.Blocks.Add(paragraph_Translate);
         }
         #endregion
         private void ChangeNightMode(object sender, RoutedEventArgs e)
@@ -101,6 +167,8 @@ namespace LocalizerEditor
             Resources.MergedDictionaries.RemoveAt(0);
             Resources.MergedDictionaries.Insert(0, resource);
         }
+
+        
     }
 }
 
